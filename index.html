@@ -3,87 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ørbit - Map Interface</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: url('https://grainy-gradients.vercel.app/noise.svg') center/cover, #0e0e0e;
-      color: white;
-    }
-
-    #map {
-      height: 100vh;
-      z-index: 1;
-    }
-
-    .glass-container {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      padding: 20px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-    }
-
-    .glass-container h1 {
-      font-size: 1.5rem;
-      margin: 0;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-
-    .btn {
-      background: rgba(255, 255, 255, 0.08);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 10px 15px;
-      margin-top: 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-  </style>
+  <title>Ørbit</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
 </head>
 <body>
   <div id="map"></div>
-  <div class="glass-container">
-    <h1>Ørbit</h1>
-    <button class="btn" onclick="locateMe()">Find Me</button>
+
+  <div class="glass search-bar">
+    <input id="destination" type="text" placeholder="Enter destination (lat,lng)" />
+    <button onclick="routeTo()">GO</button>
   </div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([20.5937, 78.9629], 5);
+  <button class="glass center-btn" onclick="centerMap()">🎯</button>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    let userMarker;
-
-    function locateMe() {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        map.setView([latitude, longitude], 15);
-
-        if (userMarker) map.removeLayer(userMarker);
-        userMarker = L.marker([latitude, longitude]).addTo(map)
-          .bindPopup("You are here!").openPopup();
-      }, err => {
-        alert("Location access denied.");
-      });
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
