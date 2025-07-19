@@ -2,67 +2,59 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
-body, html {
+html, body {
   height: 100%;
-  width: 100%;
   overflow: hidden;
 }
 
 #map {
   height: 100%;
   width: 100%;
-  z-index: 0;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
+/* Glassy Bottom Bar */
 .bottom-bar {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
-  max-width: 600px;
-  padding: 14px 20px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(18px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  z-index: 9999;
-}
-
-.bar-content {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 10px 20px;
   display: flex;
   gap: 10px;
-  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
 
-.bar-content input {
-  flex: 1;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  font-size: 14px;
-}
-
-.bar-content input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.bar-content button {
-  padding: 10px 16px;
+.bottom-bar input {
   background: rgba(255, 255, 255, 0.2);
-  color: white;
   border: none;
+  padding: 8px 12px;
   border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  color: #fff;
+  outline: none;
+  width: 200px;
 }
 
-.bar-content button:hover {
-  background: rgba(255, 255, 255, 0.3);
+.bottom-bar button {
+  background: #ffffff30;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.bottom-bar button:hover {
+  background: #ffffff50;
 }
