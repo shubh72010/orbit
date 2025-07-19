@@ -8,24 +8,17 @@
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-VRN9kLq+F2FvMG6D5UldUlM+C5VQUv7OSi6FZZn3AYg="
-    crossorigin=""
   />
 </head>
 <body>
   <div id="map"></div>
 
-  <!-- Overlay Glass UI -->
-  <div class="bottom-bar">
-    <input type="text" id="search" placeholder="Search for places..." />
-    <button onclick="searchPlace()">Go</button>
+  <div class="bottom-glass">
+    <input id="searchBox" type="text" placeholder="Search for a place..." />
+    <button onclick="searchPlace()">🔍</button>
   </div>
 
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-QV1M/q0X3RSIk5zY0z2m2F7CRO1kJ1T9aH+1RrDgjrg="
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
