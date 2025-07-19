@@ -1,24 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- index.html --><!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ørbit</title>
   <link rel="stylesheet" href="style.css" />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
   <div id="map"></div>
-
-  <div class="bottom-glass">
-    <input id="searchBox" type="text" placeholder="Search for a place..." />
-    <button onclick="searchPlace()">🔍</button>
+  <div class="glass-ui">
+    <input type="text" id="placeType" placeholder="Type: restaurant, atm, hospital...">
+    <button onclick="findNearbyPlaces()">Find Nearby</button>
+    <ul id="results"></ul>
   </div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
-</html>
+</html>/* style.css */ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
+
+#map { height: 100vh; width: 100%; position: absolute; z-index: 1; }
+
+.glass-ui { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.1); border-radius: 20px; backdrop-filter: blur(12px); padding: 15px; z-index: 2; display: flex; flex-direction: column; width: 80%; max-width: 400px; box-shadow: 0 4px 30px rgba(0,0,0,0.1); }
+
+.glass-ui input { border: none; border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 16px; }
+
+.glass-ui button { padding: 10px; background: #ffffff33; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; }
+
+#results { list-style: none; padding: 0; margin-top: 10px; color: white; font-size: 14px; max-height: 150px; overflow-y: auto; }
+
+/* script.js */ let map = L.map('map').setView([20.5937, 78.9629], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+
+let userMarker; navigator.geolocation.getCurrentPosition(pos => { const lat = pos.coords.latitude; const lng = pos.coords.longitude; map.setView([lat, lng], 15); userMarker = L.marker([lat, lng]).addTo(map).bindPopup("You are here").openPopup(); });
+
+function findNearbyPlaces() { const type = document.getElementById('placeType').value; if (!type) return;
+
+navigator.geolocation.getCurrentPosition(pos => { const lat = pos.coords.latitude; const lng = pos.coords.longitude;
+
+fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${type}&limit=10&bounded=1&viewbox=${lng-0.01},${lat+0.01},${lng+0.01},${lat-0.01}`)
+  .then(res => res.json())
+  .then(data => {
+    const resultsEl = document.getElementById('results');
+    resultsEl.innerHTML = '';
+
+    data.forEach(place => {
+      const li = document.createElement('li');
+      li.textContent = place.display_name;
+      resultsEl.appendChild(li);
+      L.marker([place.lat, place.lon]).addTo(map).bindPopup(place.display_name);
+    });
+  });
+
+}); }
+
