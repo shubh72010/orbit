@@ -1,62 +1,55 @@
-* {
+body, html {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
-}
-
-body,
-html {
   height: 100%;
-  width: 100%;
   overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f0f0f;
 }
 
 #map {
-  height: 100vh;
-  width: 100vw;
-  z-index: 1;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
 }
 
-.glass-bottom-bar {
+/* Bottom Glass Bar */
+.bottom-bar {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
-  max-width: 500px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 15px;
+  padding: 10px 20px;
   display: flex;
+  align-items: center;
   gap: 10px;
-  z-index: 1000;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  z-index: 999;
 }
 
-.glass-bottom-bar input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
+.bottom-bar input {
+  background: transparent;
   border: none;
+  color: white;
+  font-size: 16px;
   outline: none;
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
-  font-size: 1em;
+  flex: 1;
+  min-width: 200px;
 }
 
-.glass-bottom-bar button {
-  background-color: #ffffff25;
+.bottom-bar button {
+  background-color: #9147ff;
   color: white;
   border: none;
+  padding: 8px 14px;
   border-radius: 10px;
-  padding: 10px 15px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
-.glass-bottom-bar button:hover {
-  background-color: #ffffff40;
+.bottom-bar button:hover {
+  background-color: #7a2dff;
 }
