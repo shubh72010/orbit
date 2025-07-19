@@ -1,52 +1,37 @@
-// Initialize the map
-const map = L.map('map').setView([19.0760, 72.8777], 13); // Default to Mumbai
+const map = L.map("map").setView([28.6139, 77.2090], 13); // Default: New Delhi
 
-// Add OpenStreetMap tile layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "© OpenStreetMap",
 }).addTo(map);
 
-// Search for a place and add marker
-async function searchPlace(query) {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (data.length > 0) {
-      const place = data[0]; // best match
-      const lat = parseFloat(place.lat);
-      const lon = parseFloat(place.lon);
-      const name = place.display_name;
-
-      // Add marker
-      L.marker([lat, lon])
-        .addTo(map)
-        .bindPopup(`<b>${name}</b>`)
-        .openPopup();
-
-      // Move to location
-      map.setView([lat, lon], 16);
-    } else {
-      alert("No results found.");
-    }
-  } catch (error) {
-    console.error("Error fetching place:", error);
-    alert("Something went wrong while searching.");
-  }
+// Optional: user's location
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      map.setView([lat, lng], 15);
+      L.marker([lat, lng]).addTo(map).bindPopup("You're here!").openPopup();
+    },
+    () => console.warn("Location access denied.")
+  );
 }
 
-// Hook up search button
-document.getElementById("searchBtn").addEventListener("click", () => {
-  const query = document.getElementById("placeSearch").value;
-  if (query.trim()) {
-    searchPlace(query);
-  }
-});
+// Nominatim place search
+function searchPlace() {
+  const query = document.getElementById("search").value;
+  if (!query) return;
 
-// Optional: press Enter to search
-document.getElementById("placeSearch").addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    document.getElementById("searchBtn").click();
-  }
-});
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.length > 0) {
+        const { lat, lon, display_name } = data[0];
+        map.setView([lat, lon], 16);
+        L.marker([lat, lon]).addTo(map).bindPopup(display_name).openPopup();
+      } else {
+        alert("No results found.");
+      }
+    })
+    .catch((err) => console.error("Search failed:", err));
+}
