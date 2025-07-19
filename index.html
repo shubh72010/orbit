@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ørbit</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Ørbit – Free Map App</title>
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha512-sA+e2QbsK7HYXje4a92k8lW68iXpb6wMNpDAp5PRk1fJz1+ppgFP08U9f2YOvL+jENZoWkcbBzFjYx7WbWZJhw=="
     crossorigin=""
   />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div id="map"></div>
 
-  <div class="bottom-bar">
-    <input type="text" id="place-input" placeholder="Search nearby places..." />
-    <button onclick="searchPlaces()">Find</button>
+  <div class="glass-ui">
+    <input id="placeSearch" type="text"
+      placeholder="Search place (e.g. cafe, hospital)" />
+    <button id="btnSearch">Find Nearby</button>
+    <ul id="results"></ul>
   </div>
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha512-o8xNkM3P8jtcfO5PfuS7GDbZxI6F+7s4hhdWrEkM2lM8qHsnCWzN9FqPy22eV13XG5cQHCBhnC4y3M1uN8gHZg=="
+    integrity="sha512-o8xNkM3P8jtcfO..."
     crossorigin=""
   ></script>
   <script src="script.js"></script>
