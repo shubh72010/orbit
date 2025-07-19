@@ -1,56 +1,60 @@
 let map;
 let userMarker;
-let userLat = 0;
-let userLon = 0;
 
 function initMap() {
-  map = L.map("map").setView([20.5937, 78.9629], 5); // India center fallback
+  map = L.map('map').setView([0, 0], 13);
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
   }).addTo(map);
 
-  if ("geolocation" in navigator) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        userLat = position.coords.latitude;
-        userLon = position.coords.longitude;
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
 
-        map.setView([userLat, userLon], 14);
+        map.setView([lat, lon], 15);
 
-        userMarker = L.marker([userLat, userLon])
-          .addTo(map)
-          .bindPopup("You are here.")
-          .openPopup();
+        userMarker = L.marker([lat, lon]).addTo(map)
+          .bindPopup('You are here').openPopup();
       },
-      () => {
-        alert("Location access denied. Showing default view.");
-      }
+      () => alert("Could not get your location.")
     );
   } else {
-    alert("Geolocation not supported.");
+    alert("Geolocation is not supported by your browser.");
   }
 }
 
-function searchNearby() {
-  const query = document.getElementById("searchInput").value.trim();
+function searchPlaces() {
+  const query = document.getElementById('place-input').value;
   if (!query) return;
 
-  const radius = 5000; // in meters
-  const apiKey = "5ae2e3f221c38a28845f05b6"; // OpenTripMap test API key (free)
-  const url = `https://api.opentripmap.com/0.1/en/places/radius?radius=${radius}&lon=${userLon}&lat=${userLat}&kinds=${query}&format=json&apikey=${apiKey}`;
+  if (!map.getCenter()) return;
+
+  const center = map.getCenter();
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=10&bounded=1&viewbox=${center.lng - 0.01},${center.lat + 0.01},${center.lng + 0.01},${center.lat - 0.01}`;
 
   fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      data.forEach((place) => {
-        if (place.point) {
-          const marker = L.marker([place.point.lat, place.point.lon]).addTo(map);
-          marker.bindPopup(place.name || "Unnamed Place");
-        }
+    .then(res => res.json())
+    .then(data => {
+      if (data.length === 0) {
+        alert("No results found.");
+        return;
+      }
+
+      data.forEach(place => {
+        const lat = place.lat;
+        const lon = place.lon;
+        const name = place.display_name;
+
+        L.marker([lat, lon]).addTo(map).bindPopup(name);
       });
     })
-    .catch((err) => console.error("Error fetching nearby places:", err));
+    .catch(err => {
+      console.error(err);
+      alert("Error fetching places.");
+    });
 }
 
 window.onload = initMap;
