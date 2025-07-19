@@ -3,23 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ørbit - Map UI</title>
+  <title>Ørbit</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places" async defer></script>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha512-pasj6jh7L8gdpPGP0LB9OclOnUnM2eyONMN1ql6x6dtIhuCrPYnShFXYUr9+I8IVPa0pbnJZ4oKcrW1JX7rMxQ=="
+    crossorigin=""
+  />
 </head>
 <body>
   <div id="map"></div>
 
-  <!-- Top Search Glass -->
-  <div class="search-box">
-    <input id="placeSearch" type="text" placeholder="Search for places..." />
-    <button id="searchBtn">🔍</button>
+  <div class="bottom-bar">
+    <div class="bar-content">
+      <input id="searchInput" type="text" placeholder="Search for a place..." />
+      <button onclick="searchPlace()">Go</button>
+    </div>
   </div>
 
-  <!-- Bottom Glass Info Bar -->
-  <div class="bottom-bar">
-    <div id="info">Welcome to Ørbit 🌐</div>
-  </div>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha512-aA+qwDaHeGdGbbjrpM1C9BgXZK9NruGtx2Dclq03H2S+G4l2G7qOa6exwKlA6klVQ1dycfG9f5wQgUho3wB9ow=="
+    crossorigin=""
+  ></script>
+  <script src="script.js"></script>
 </body>
 </html>
