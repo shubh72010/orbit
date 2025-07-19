@@ -8,60 +8,125 @@
   <meta name="theme-color" content="#0f0f0f" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    body, html {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
       height: 100%;
-      background: #0f0f0f;
       font-family: 'Segoe UI', sans-serif;
-      color: #ffffff;
+      background-color: #0f0f0f;
+      color: #fff;
     }
+
     #map {
-      height: 100vh;
-      width: 100vw;
-      z-index: 0;
-    }
-    .branding {
       position: absolute;
-      top: 1rem;
-      left: 1rem;
+      top: 60px;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+
+    header, footer {
+      position: fixed;
+      left: 0;
+      right: 0;
       z-index: 999;
-      font-size: 1.5rem;
-      font-weight: bold;
+      padding: 12px 20px;
+      background: rgba(15, 15, 15, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header {
+      top: 0;
+      height: 60px;
+      font-size: 1.2rem;
+      font-weight: 600;
       letter-spacing: 0.05em;
-      color: #ffffff;
-      background: rgba(0,0,0,0.5);
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      backdrop-filter: blur(4px);
-      user-select: none;
+    }
+
+    footer {
+      bottom: 0;
+      height: 60px;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .btn {
+      background: #1f1f1f;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #2c2c2c;
+    }
+
+    @media (max-width: 600px) {
+      header, footer {
+        padding: 10px 15px;
+      }
+      .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="branding">Ørbit</div>
+  <header>Ørbit</header>
   <div id="map"></div>
+  <footer>
+    <button class="btn" onclick="locateUser()">📍 Locate Me</button>
+    <button class="btn">📌 Drop Pin</button>
+    <button class="btn">🔍 Search</button>
+  </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const map = L.map('map').setView([20.5937, 78.9629], 5); // Default: India
+    const map = L.map('map').setView([20.5937, 78.9629], 5); // India default
 
+    // Tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
+      attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        map.setView([lat, lon], 13);
-        L.marker([lat, lon]).addTo(map)
-          .bindPopup("You're here 🛰️")
-          .openPopup();
-      }, err => {
-        console.warn("Location access denied.");
-      });
+    let userMarker;
+
+    // Locate function
+    function locateUser() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          map.setView([lat, lon], 13);
+
+          if (userMarker) {
+            userMarker.setLatLng([lat, lon]);
+          } else {
+            userMarker = L.marker([lat, lon]).addTo(map)
+              .bindPopup("You're here 🛰️")
+              .openPopup();
+          }
+        }, err => {
+          alert("Location access denied.");
+        });
+      } else {
+        alert("Geolocation not supported.");
+      }
     }
   </script>
 
