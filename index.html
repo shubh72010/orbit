@@ -4,29 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ørbit</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-sA+4X7qE7scw0UV+YqlaZSOipzbbWQ1Fh1yLZ8JfMTU="
+    integrity="sha512-o8xNkM3P8jtcfO5PfuS7GDbZxI6F+7s4hhdWrEkM2lM8qHsnCWzN9FqPy22eV13XG5cQHCBhnC4y3M1uN8gHZg=="
     crossorigin=""
   />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Map Container -->
   <div id="map"></div>
 
+  <!-- Bottom Glass UI Bar -->
   <div class="bottom-bar">
-    <h2>Ørbit</h2>
-    <button onclick="searchNearby('restaurant')">🍽️ Restaurants</button>
-    <button onclick="searchNearby('cafe')">☕ Cafés</button>
-    <button onclick="searchNearby('school')">🏫 Schools</button>
+    <input type="text" id="place-input" placeholder="Search nearby places..." />
+    <button onclick="searchPlaces()">Find</button>
   </div>
 
+  <!-- Leaflet JS -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-Vc3XU1J6jP3H4Jw2jUPYQxEL+ynR+1hQgkGvnd+Wxj4="
+    integrity="sha512-o8xNkM3P8jtcfO5PfuS7GDbZxI6F+7s4hhdWrEkM2lM8qHsnCWzN9FqPy22eV13XG5cQHCBhnC4y3M1uN8gHZg=="
     crossorigin=""
   ></script>
+
+  <!-- Custom JS -->
   <script src="script.js"></script>
 </body>
 </html>
