@@ -1,32 +1,56 @@
-const map = L.map('map').setView([28.6139, 77.2090], 13); // Default: New Delhi
+let map;
+let userMarker;
+let userLat = 0;
+let userLon = 0;
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap',
-}).addTo(map);
+function initMap() {
+  map = L.map("map").setView([20.5937, 78.9629], 5); // India center fallback
 
-let marker;
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+  }).addTo(map);
 
-function searchPlace() {
-  const query = document.getElementById('searchBox').value;
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userLat = position.coords.latitude;
+        userLon = position.coords.longitude;
+
+        map.setView([userLat, userLon], 14);
+
+        userMarker = L.marker([userLat, userLon])
+          .addTo(map)
+          .bindPopup("You are here.")
+          .openPopup();
+      },
+      () => {
+        alert("Location access denied. Showing default view.");
+      }
+    );
+  } else {
+    alert("Geolocation not supported.");
+  }
+}
+
+function searchNearby() {
+  const query = document.getElementById("searchInput").value.trim();
   if (!query) return;
 
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.length > 0) {
-        const { lat, lon, display_name } = data[0];
+  const radius = 5000; // in meters
+  const apiKey = "5ae2e3f221c38a28845f05b6"; // OpenTripMap test API key (free)
+  const url = `https://api.opentripmap.com/0.1/en/places/radius?radius=${radius}&lon=${userLon}&lat=${userLat}&kinds=${query}&format=json&apikey=${apiKey}`;
 
-        if (marker) {
-          map.removeLayer(marker);
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      data.forEach((place) => {
+        if (place.point) {
+          const marker = L.marker([place.point.lat, place.point.lon]).addTo(map);
+          marker.bindPopup(place.name || "Unnamed Place");
         }
-
-        marker = L.marker([lat, lon]).addTo(map).bindPopup(display_name).openPopup();
-        map.setView([lat, lon], 14);
-      } else {
-        alert("No results found.");
-      }
+      });
     })
-    .catch(() => {
-      alert("Something went wrong.");
-    });
+    .catch((err) => console.error("Error fetching nearby places:", err));
 }
+
+window.onload = initMap;
