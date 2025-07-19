@@ -1,56 +1,127 @@
-<!-- index.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ørbit</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .bottom-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px;
+      z-index: 9999;
+      color: white;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .bottom-bar h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    #places-list {
+      list-style: none;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    #places-list li {
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
   <div id="map"></div>
-  <div class="glass-ui">
-    <input type="text" id="placeType" placeholder="Type: restaurant, atm, hospital...">
-    <button onclick="findNearbyPlaces()">Find Nearby</button>
-    <ul id="results"></ul>
+
+  <div class="bottom-bar">
+    <div class="location">
+      <h2>Nearby Places</h2>
+      <ul id="places-list"></ul>
+    </div>
   </div>
-  <script src="script.js"></script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([28.6139, 77.2090], 13); // Default to Delhi
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    function addNearbyPlaces(lat, lng) {
+      const dummyPlaces = [
+        'Coffee Lab',
+        'Byte Diner',
+        'Neon Arcade',
+        'Pixel Park',
+        'Lo-Fi Lounge',
+        'The Terminal',
+      ];
+
+      const list = document.getElementById('places-list');
+      list.innerHTML = '';
+      dummyPlaces.forEach((place) => {
+        const li = document.createElement('li');
+        li.textContent = place;
+        list.appendChild(li);
+      });
+    }
+
+    function onLocationFound(e) {
+      const radius = e.accuracy / 2;
+
+      L.marker(e.latlng).addTo(map)
+        .bindPopup("You are here").openPopup();
+
+      L.circle(e.latlng, radius).addTo(map);
+      map.setView(e.latlng, 15);
+      addNearbyPlaces(e.latitude, e.longitude);
+    }
+
+    function onLocationError(e) {
+      alert(e.message);
+    }
+
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+
+    map.locate({ setView: true, maxZoom: 15 });
+  </script>
 </body>
-</html>/* style.css */ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
-
-#map { height: 100vh; width: 100%; position: absolute; z-index: 1; }
-
-.glass-ui { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.1); border-radius: 20px; backdrop-filter: blur(12px); padding: 15px; z-index: 2; display: flex; flex-direction: column; width: 80%; max-width: 400px; box-shadow: 0 4px 30px rgba(0,0,0,0.1); }
-
-.glass-ui input { border: none; border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 16px; }
-
-.glass-ui button { padding: 10px; background: #ffffff33; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; }
-
-#results { list-style: none; padding: 0; margin-top: 10px; color: white; font-size: 14px; max-height: 150px; overflow-y: auto; }
-
-/* script.js */ let map = L.map('map').setView([20.5937, 78.9629], 5);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
-
-let userMarker; navigator.geolocation.getCurrentPosition(pos => { const lat = pos.coords.latitude; const lng = pos.coords.longitude; map.setView([lat, lng], 15); userMarker = L.marker([lat, lng]).addTo(map).bindPopup("You are here").openPopup(); });
-
-function findNearbyPlaces() { const type = document.getElementById('placeType').value; if (!type) return;
-
-navigator.geolocation.getCurrentPosition(pos => { const lat = pos.coords.latitude; const lng = pos.coords.longitude;
-
-fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${type}&limit=10&bounded=1&viewbox=${lng-0.01},${lat+0.01},${lng+0.01},${lat-0.01}`)
-  .then(res => res.json())
-  .then(data => {
-    const resultsEl = document.getElementById('results');
-    resultsEl.innerHTML = '';
-
-    data.forEach(place => {
-      const li = document.createElement('li');
-      li.textContent = place.display_name;
-      resultsEl.appendChild(li);
-      L.marker([place.lat, place.lon]).addTo(map).bindPopup(place.display_name);
-    });
-  });
-
-}); }
-
+</html>
