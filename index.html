@@ -4,10 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ørbit</title>
-  <meta name="description" content="A minimalist location map app by Flakious.">
   <meta name="theme-color" content="#0f0f0f" />
+  <meta name="description" content="Ørbit — Minimalist glass-style map app by Flakious." />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    :root {
+      --glass-bg: rgba(18, 18, 18, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-glow: rgba(255, 255, 255, 0.05);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -19,12 +25,13 @@
       font-family: 'Segoe UI', sans-serif;
       background-color: #0f0f0f;
       color: #fff;
+      overflow: hidden;
     }
 
     #map {
       position: absolute;
-      top: 60px;
-      bottom: 60px;
+      top: 70px;
+      bottom: 70px;
       left: 0;
       right: 0;
       z-index: 1;
@@ -35,50 +42,53 @@
       left: 0;
       right: 0;
       z-index: 999;
-      padding: 12px 20px;
-      background: rgba(15, 15, 15, 0.75);
-      backdrop-filter: blur(8px);
+      height: 70px;
+      padding: 0 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(16px);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px 0 var(--glass-glow);
     }
 
     header {
       top: 0;
-      height: 60px;
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: bold;
       letter-spacing: 0.05em;
     }
 
     footer {
       bottom: 0;
-      height: 60px;
       justify-content: center;
-      gap: 20px;
+      gap: 15px;
     }
 
     .btn {
-      background: #1f1f1f;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
       color: #fff;
-      border: 1px solid #333;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .btn:hover {
-      background: #2c2c2c;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     @media (max-width: 600px) {
       header, footer {
-        padding: 10px 15px;
+        padding: 0 10px;
       }
       .btn {
-        padding: 6px 12px;
+        padding: 8px 12px;
         font-size: 0.85rem;
       }
     }
@@ -96,16 +106,14 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const map = L.map('map').setView([20.5937, 78.9629], 5); // India default
+    const map = L.map('map').setView([20.5937, 78.9629], 5); // Default: India
 
-    // Tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
     let userMarker;
 
-    // Locate function
     function locateUser() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
