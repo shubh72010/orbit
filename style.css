@@ -4,55 +4,64 @@ body, html {
   height: 100%;
   overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
-  background: #111;
+  background: #0f0f0f;
+  color: white;
 }
-
 #map {
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 0;
 }
-
-.bottom-bar {
+.glass-ui {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
+  width: 90%;
+  max-width: 450px;
+  padding: 12px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
   border-radius: 20px;
-  padding: 10px 20px;
+  z-index: 999;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 9999;
+  flex-direction: column;
+  gap: 8px;
 }
-
-.bottom-bar input {
-  flex: 1;
-  background: transparent;
+.glass-ui input {
+  width: 100%;
+  padding: 10px;
   border: none;
-  color: white;
-  font-size: 16px;
-  outline: none;
-  min-width: 200px;
-}
-
-.bottom-bar input::placeholder {
-  color: #ddd;
-}
-
-.bottom-bar button {
-  background-color: #9147ff;
-  color: white;
-  border: none;
-  padding: 8px 14px;
   border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  font-size: 14px;
 }
-
-.bottom-bar button:hover {
-  background-color: #7a2dff;
+.glass-ui button {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #9147ff;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+}
+.glass-ui button:hover {
+  background: #7a2dff;
+}
+#results {
+  list-style: none;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 0;
+}
+#results li {
+  padding: 8px;
+  background: rgba(255,255,255,0.1);
+  margin-bottom: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#results li:hover {
+  background: rgba(255,255,255,0.2);
 }
